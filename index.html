@@ -1,0 +1,332 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Mithran AR, Flutter developer in Thrissur, Kerala. Five live apps on Google Play.">
+<title>Mithran AR</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Instrument+Sans:wght@400..600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Concept: a developer's workbench. Left-aligned editorial column, the Dart code window as the one bold element, hairline rows instead of cards. */
+:root {
+  --bg: #F3F6FB;
+  --surface: #FFFFFF;
+  --ink: #0D1A2D;
+  --muted: #4F5F78;
+  --line: #D3DCE9;
+  --accent: #0B5FDC;
+  --accent-ink: #FFFFFF;
+  --live: #0F7A57;
+  --code-bg: #0D1A2D;
+  --code-ink: #DCE6F5;
+  --code-dim: #7F90AB;
+  --code-kw: #7CB7FF;
+  --code-type: #8FE0C0;
+  --code-str: #F2C98A;
+  --display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body: "Instrument Sans", "Segoe UI", system-ui, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #09101C; --surface: #0F192A; --ink: #E7EEF9; --muted: #9AAAC4; --line: #1F2E48;
+    --accent: #6AAAFF; --accent-ink: #06101F; --live: #4FD6A4;
+    --code-bg: #060C16; --code-ink: #DCE6F5; --code-dim: #7185A3; --code-kw: #7CB7FF; --code-type: #8FE0C0; --code-str: #F2C98A;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #09101C; --surface: #0F192A; --ink: #E7EEF9; --muted: #9AAAC4; --line: #1F2E48;
+  --accent: #6AAAFF; --accent-ink: #06101F; --live: #4FD6A4;
+  --code-bg: #060C16; --code-ink: #DCE6F5; --code-dim: #7185A3; --code-kw: #7CB7FF; --code-type: #8FE0C0; --code-str: #F2C98A;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--body); font-size: 16px; line-height: 1.6;
+  padding-block: 0 56px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+a { color: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+.wrap { max-width: 1040px; margin: 0 auto; }
+
+/* top bar */
+.top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 24px; padding-block: 22px; }
+.top .mark { font-family: var(--display); font-weight: 700; font-size: 18px; letter-spacing: -0.01em; text-decoration: none; }
+.top nav { display: flex; flex-wrap: wrap; gap: 4px 22px; font-size: 15px; }
+.top nav a { text-decoration: none; color: var(--muted); padding: 4px 0; border-bottom: 1px solid transparent; }
+.top nav a:hover { color: var(--ink); border-bottom-color: var(--accent); }
+
+/* hero */
+.hero { display: grid; grid-template-columns: minmax(0, 1fr); gap: 40px; padding-block: 36px 64px; align-items: center; }
+@media (min-width: 880px) { .hero { grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr); gap: 56px; padding-block: 64px 88px; } }
+.eyebrow { font-family: var(--mono); font-size: 13px; color: var(--muted); letter-spacing: 0.02em; margin: 0 0 18px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.dot { width: 8px; height: 8px; border-radius: 50%; background: var(--live); box-shadow: 0 0 0 4px color-mix(in srgb, var(--live) 22%, transparent); flex: none; }
+h1 { font-family: var(--display); font-weight: 800; font-size: clamp(48px, 9vw, 96px); line-height: 0.95; letter-spacing: -0.035em; margin: 0 0 22px; text-wrap: balance; }
+.lead { font-size: clamp(18px, 2.4vw, 21px); line-height: 1.5; color: var(--muted); max-width: 34em; margin: 0 0 30px; }
+.lead strong { color: var(--ink); font-weight: 600; }
+.actions { display: flex; flex-wrap: wrap; gap: 12px; }
+.btn { display: inline-flex; align-items: center; gap: 8px; font: 600 15px/1 var(--body); padding: 14px 20px; border-radius: 10px; text-decoration: none; border: 1px solid var(--line); background: transparent; color: var(--ink); cursor: pointer; transition: border-color .15s, background-color .15s; }
+.btn:hover { border-color: var(--accent); }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.btn.primary:hover { background: color-mix(in srgb, var(--accent) 88%, var(--ink)); }
+
+/* code window */
+.win { background: var(--code-bg); color: var(--code-ink); border-radius: 14px; overflow: hidden; border: 1px solid color-mix(in srgb, var(--code-ink) 12%, transparent); min-width: 0; }
+.win-bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 16px; font-family: var(--mono); font-size: 12px; color: var(--code-dim); border-bottom: 1px solid color-mix(in srgb, var(--code-ink) 10%, transparent); }
+.win-bar span:last-child { white-space: nowrap; }
+.win pre { margin: 0; padding: 18px 18px 20px; overflow-x: auto; font-family: var(--mono); font-size: 13.5px; line-height: 1.75; tab-size: 2; }
+.k { color: var(--code-kw); } .t { color: var(--code-type); } .s { color: var(--code-str); } .c { color: var(--code-dim); }
+.win-note { padding: 12px 16px 14px; font-size: 13px; color: var(--code-dim); border-top: 1px solid color-mix(in srgb, var(--code-ink) 10%, transparent); }
+
+/* sections */
+section { padding-block: 56px 8px; border-top: 1px solid var(--line); }
+.sec-head { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; margin-bottom: 28px; }
+@media (min-width: 880px) { .sec-head { grid-template-columns: 220px minmax(0, 1fr); gap: 32px; } }
+h2 { font-family: var(--display); font-weight: 700; font-size: 28px; letter-spacing: -0.02em; line-height: 1.1; margin: 0; }
+.sec-head p { margin: 0; color: var(--muted); max-width: 40em; }
+
+/* apps */
+.apps { list-style: none; margin: 0; padding: 0; }
+.app { display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; padding-block: 26px; border-top: 1px solid var(--line); }
+.app:first-child { border-top: 0; padding-top: 0; }
+@media (min-width: 880px) { .app { grid-template-columns: 220px minmax(0, 1fr) auto; gap: 32px; align-items: start; } }
+.app h3 { font-family: var(--display); font-weight: 700; font-size: 22px; letter-spacing: -0.015em; line-height: 1.15; margin: 0 0 6px; }
+.status { display: inline-flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 12px; color: var(--live); }
+.status::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--live); }
+.app p { margin: 0 0 12px; max-width: 38em; }
+.tags { display: flex; flex-wrap: wrap; gap: 6px 8px; margin: 0; padding: 0; list-style: none; }
+.tags li { font-family: var(--mono); font-size: 12px; color: var(--muted); border: 1px solid var(--line); padding: 3px 9px; border-radius: 6px; }
+.pkg { font-family: var(--mono); font-size: 12px; color: var(--muted); margin: 12px 0 0; overflow-wrap: anywhere; }
+.app .btn { align-self: start; justify-self: start; }
+
+/* stack */
+.stack { display: grid; grid-template-columns: minmax(0, 1fr); margin: 0; }
+.stack div { display: grid; grid-template-columns: minmax(0, 1fr); gap: 4px; padding-block: 16px; border-top: 1px solid var(--line); }
+.stack div:first-child { border-top: 0; padding-top: 0; }
+@media (min-width: 880px) { .stack div { grid-template-columns: 220px minmax(0, 1fr); gap: 32px; } }
+.stack dt { font-family: var(--mono); font-size: 13px; color: var(--muted); }
+.stack dd { margin: 0; }
+
+/* work */
+.job h3 { font-family: var(--display); font-size: 20px; font-weight: 700; margin: 0 0 4px; letter-spacing: -0.01em; }
+.job .where { color: var(--muted); margin: 0 0 16px; }
+.job ul { margin: 0; padding-left: 20px; max-width: 46em; }
+.job li { margin-bottom: 8px; padding-left: 4px; }
+.also { margin: 28px 0 0; display: grid; gap: 4px 32px; grid-template-columns: minmax(0, 1fr); color: var(--muted); font-size: 15px; }
+@media (min-width: 700px) { .also { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.also b { color: var(--ink); font-weight: 600; }
+
+/* contact */
+.contact-list { display: grid; gap: 14px; margin: 0; }
+.contact-list div { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; }
+.contact-list dt { font-family: var(--mono); font-size: 13px; color: var(--muted); width: 84px; }
+.contact-list dd { margin: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 10px; min-width: 0; }
+.mail { font-family: var(--mono); font-size: 15px; user-select: all; overflow-wrap: anywhere; }
+.copy { font: 500 13px/1 var(--body); padding: 8px 12px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); cursor: pointer; }
+.copy:hover { border-color: var(--accent); }
+.foot { margin-top: 56px; padding-top: 20px; border-top: 1px solid var(--line); font-size: 13px; color: var(--muted); font-family: var(--mono); }
+
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="top">
+    <a class="mark" href="#top">Mithran AR</a>
+    <nav aria-label="Sections">
+      <a href="#apps">Apps</a>
+      <a href="#stack">Stack</a>
+      <a href="#work">Work</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </header>
+
+  <main id="top">
+    <div class="hero">
+      <div>
+        <p class="eyebrow"><span class="dot" aria-hidden="true"></span>Flutter developer · Thrissur, Kerala</p>
+        <h1>Mithran AR</h1>
+        <p class="lead">I own <strong>five production apps on Google Play</strong>, from REST and WebSocket integration to Play Console releases, as the sole Flutter developer at Nth Index Software Solutions.</p>
+        <div class="actions">
+          <a class="btn primary" href="#apps">See the apps</a>
+          <a class="btn" href="#contact">Get in touch</a>
+        </div>
+      </div>
+
+      <figure class="win" style="margin:0" aria-label="Example Riverpod code">
+        <div class="win-bar"><span>meetings_provider.dart</span><span>Riverpod</span></div>
+<pre><code><span class="k">@riverpod</span>
+<span class="k">class</span> <span class="t">Meetings</span> <span class="k">extends</span> <span class="t">_$Meetings</span> {
+  <span class="k">@override</span>
+  <span class="t">Future</span>&lt;<span class="t">List</span>&lt;<span class="t">Meeting</span>&gt;&gt; build() =&gt;
+      ref.watch(apiProvider).meetings();
+
+  <span class="t">Future</span>&lt;<span class="k">void</span>&gt; reschedule(
+    <span class="t">String</span> id, <span class="t">DateTime</span> to,
+  ) <span class="k">async</span> {
+    <span class="k">await</span> ref.read(apiProvider).reschedule(id, to);
+    ref.invalidateSelf();
+  }
+}</code></pre>
+        <figcaption class="win-note">An AsyncNotifier with code generation, the pattern I use in N Support.</figcaption>
+      </figure>
+    </div>
+
+    <section id="apps" aria-labelledby="apps-h">
+      <div class="sec-head">
+        <h2 id="apps-h">Apps on Google Play</h2>
+        <p>Five live apps. I built or extended each one and handle its releases.</p>
+      </div>
+      <ul class="apps">
+        <li class="app">
+          <div>
+            <h3>N Support</h3>
+            <span class="status">Live on Google Play</span>
+          </div>
+          <div>
+            <p>Internal workplace app for meetings, projects, tasks and incident tracking. Meetings can be created, rescheduled and completed, with contact picking and shareable meeting links. Includes Google Sign-In, push notifications and profile photo upload.</p>
+            <ul class="tags"><li>Flutter</li><li>Riverpod</li><li>Google Sign-In</li><li>FCM</li></ul>
+            <p class="pkg">com.nthindex.nsupport</p>
+          </div>
+          <a class="btn" href="https://play.google.com/store/apps/details?id=com.nthindex.nsupport" target="_blank" rel="noopener">Open on Play Store</a>
+        </li>
+        <li class="app">
+          <div>
+            <h3>Winscore</h3>
+            <span class="status">Live on Google Play</span>
+          </div>
+          <div>
+            <p>E-learning app with chapter-wise video courses and student content delivery. I built and enhanced features and handled Play Store updates.</p>
+            <ul class="tags"><li>Flutter</li><li>GetX</li><li>REST API</li></ul>
+            <p class="pkg">in.winscore.app</p>
+          </div>
+          <a class="btn" href="https://play.google.com/store/apps/details?id=in.winscore.app" target="_blank" rel="noopener">Open on Play Store</a>
+        </li>
+        <li class="app">
+          <div>
+            <h3>HiFi Service</h3>
+            <span class="status">Live on Google Play</span>
+          </div>
+          <div>
+            <p>Customer app of a two-sided on-demand platform. Customers book field professionals and follow live request status over REST APIs and WebSockets.</p>
+            <ul class="tags"><li>Flutter</li><li>REST API</li><li>WebSocket</li></ul>
+            <p class="pkg">in.hifiservices.serviceapp</p>
+          </div>
+          <a class="btn" href="https://play.google.com/store/apps/details?id=in.hifiservices.serviceapp" target="_blank" rel="noopener">Open on Play Store</a>
+        </li>
+        <li class="app">
+          <div>
+            <h3>HiFi Works</h3>
+            <span class="status">Live on Google Play</span>
+          </div>
+          <div>
+            <p>Worker app for the same platform. Field professionals receive and manage requests that stay in sync with the customer app in real time.</p>
+            <ul class="tags"><li>Flutter</li><li>REST API</li><li>WebSocket</li></ul>
+            <p class="pkg">in.hifiservices.workerapp</p>
+          </div>
+          <a class="btn" href="https://play.google.com/store/apps/details?id=in.hifiservices.workerapp" target="_blank" rel="noopener">Open on Play Store</a>
+        </li>
+        <li class="app">
+          <div>
+            <h3>OneScribe</h3>
+            <span class="status">Live on Google Play</span>
+          </div>
+          <div>
+            <p>Local business subscription hub that connects merchants with nearby customers, with saved user state and dynamic vendor discount listings.</p>
+            <ul class="tags"><li>Flutter</li><li>REST API</li></ul>
+            <p class="pkg">app.onescribe</p>
+          </div>
+          <a class="btn" href="https://play.google.com/store/apps/details?id=app.onescribe" target="_blank" rel="noopener">Open on Play Store</a>
+        </li>
+      </ul>
+    </section>
+
+    <section id="stack" aria-labelledby="stack-h">
+      <div class="sec-head">
+        <h2 id="stack-h">Stack</h2>
+        <p>What I use day to day.</p>
+      </div>
+      <dl class="stack">
+        <div><dt>Mobile</dt><dd>Flutter, Dart, go_router</dd></div>
+        <div><dt>State management</dt><dd>GetX, Riverpod (with riverpod_generator)</dd></div>
+        <div><dt>APIs and real-time</dt><dd>REST APIs, Dio, WebSocket, Django REST Framework, Google Maps API, Razorpay</dd></div>
+        <div><dt>Firebase and tools</dt><dd>Firebase Cloud Messaging, Crashlytics, Google Sign-In, Git, Android Studio, VS Code</dd></div>
+        <div><dt>Release</dt><dd>Google Play Console, app signing, version management, target SDK compliance</dd></div>
+      </dl>
+    </section>
+
+    <section id="work" aria-labelledby="work-h">
+      <div class="sec-head">
+        <h2 id="work-h">Work</h2>
+        <p>Where the apps above come from.</p>
+      </div>
+      <div class="job">
+        <h3>Flutter Developer</h3>
+        <p class="where">Nth Index Software Solutions · Thrissur, Kerala</p>
+        <ul>
+          <li>Sole Flutter developer for five production apps on Google Play, covering development, API integration, testing and release.</li>
+          <li>State management with GetX and Riverpod, plus real-time features with WebSockets, live tracking and Google Maps.</li>
+          <li>REST API integration with Dio, Razorpay payments and Google Sign-In across production apps.</li>
+          <li>Firebase Cloud Messaging push notifications with background handling.</li>
+          <li>Google Play Console releases: version tracking, app signing, policy and target SDK compliance, and update rollouts.</li>
+        </ul>
+      </div>
+      <div class="also">
+        <div><b>Training</b> · Flutter Development Certification, Zoople Technologies, Kochi (2024)</div>
+        <div><b>Languages</b> · English, Malayalam, Tamil</div>
+      </div>
+    </section>
+
+    <section id="contact" aria-labelledby="contact-h">
+      <div class="sec-head">
+        <h2 id="contact-h">Contact</h2>
+        <p>Open to Flutter developer roles. Email is the fastest way to reach me.</p>
+      </div>
+      <dl class="contact-list">
+        <div>
+          <dt>Email</dt>
+          <dd><span class="mail" id="mail">mithranar000@gmail.com</span><button class="copy" id="copy" type="button">Copy</button></dd>
+        </div>
+        <div>
+          <dt>LinkedIn</dt>
+          <dd><a href="https://linkedin.com/in/mithran-ar-9565642a1" target="_blank" rel="noopener">linkedin.com/in/mithran-ar-9565642a1</a></dd>
+        </div>
+        <div>
+          <dt>GitHub</dt>
+          <dd><a href="https://github.com/Mithran-AR" target="_blank" rel="noopener">github.com/Mithran-AR</a></dd>
+        </div>
+      </dl>
+    </section>
+  </main>
+
+  <footer class="foot">Mithran AR · Flutter developer · Thrissur, Kerala</footer>
+</div>
+
+<script>
+(function () {
+  var btn = document.getElementById('copy');
+  var mail = document.getElementById('mail');
+  function selectMail() {
+    try {
+      var r = document.createRange(); r.selectNodeContents(mail);
+      var s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+    } catch (e) {}
+  }
+  btn.addEventListener('click', function () {
+    var text = mail.textContent.trim();
+    var done = function () { btn.textContent = 'Copied'; setTimeout(function () { btn.textContent = 'Copy'; }, 1800); };
+    try {
+      navigator.clipboard.writeText(text).then(done, function () { selectMail(); btn.textContent = 'Press copy now'; });
+    } catch (e) { selectMail(); btn.textContent = 'Press copy now'; }
+  });
+})();
+</script>
+
+</body>
+</html>
